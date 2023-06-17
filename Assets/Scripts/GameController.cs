@@ -7,30 +7,50 @@ public class GameController : MonoBehaviour
     private TimerController timerController;
     private ScoreController scoreController;
 
+    private RecipeDisplayer recipeDisplayer;
+    private PlateDisplayer plateDisplayer;
+
     [SerializeField] private GameObject countdownPanel;
-    [SerializeField] private GameObject gameUIPanel;
-    
+    [SerializeField] private GameObject gameplayPanel;
+    [SerializeField] private EndgameController endgamePanel;
+
+    private AudioSource audioSource;
+
     private void Awake()
     {
         timerController = FindObjectOfType<TimerController>();
         scoreController = FindObjectOfType<ScoreController>();
+
+        recipeDisplayer = FindObjectOfType<RecipeDisplayer>();
+        plateDisplayer = FindObjectOfType<PlateDisplayer>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
     {
-        gameUIPanel.SetActive(false);
+        gameplayPanel.SetActive(false);
+        countdownPanel.SetActive(true);
+        endgamePanel.gameObject.SetActive(false);
     }
 
     public void GameStart()
     {
         countdownPanel.SetActive(false);
-        gameUIPanel.SetActive(true);
+        gameplayPanel.SetActive(true);
+
+        recipeDisplayer.SelectNewRecipe();
+        plateDisplayer.ResetSandwich();
 
         StartCoroutine(timerController.TimerRoutine());
+
+        audioSource.Play();
     }
 
     public void GameFinish()
     {
-        gameUIPanel.SetActive(false);
+        audioSource.Stop();
+        gameplayPanel.SetActive(false);
+        endgamePanel.EndgameSequence(scoreController.GetScore());
     }
 }

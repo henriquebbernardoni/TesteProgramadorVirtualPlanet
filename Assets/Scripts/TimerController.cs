@@ -8,12 +8,19 @@ public class TimerController : MonoBehaviour
     private TextMeshProUGUI timerText;
     private GameController gameController;
 
-    private int totalTime = 30;
+    private AudioSource audioSource;
+
+    [SerializeField] private AudioClip normalTime;
+    [SerializeField] private AudioClip finalTime;
+
+    private int totalTime = 120;
 
     private void Awake()
     {
         timerText = GetComponent<TextMeshProUGUI>();
         gameController = FindObjectOfType<GameController>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -30,6 +37,13 @@ public class TimerController : MonoBehaviour
             if (timeLeft <= 10)
             {
                 timerText.color = Color.red;
+                timerText.fontStyle = FontStyles.Bold;
+
+                audioSource.PlayOneShot(finalTime);
+            }
+            else
+            {
+                audioSource.PlayOneShot(normalTime);
             }
 
             timerText.text = timeLeft.ToString();
